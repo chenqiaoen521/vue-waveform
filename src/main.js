@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import App from './App'
 
-import {install} from './install'
+import {waveform} from './vue-waveform'
 
-Vue.use(install)
+Vue.use(waveform)
 
 /* eslint-disable no-new */
 new Vue({

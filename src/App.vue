@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <waveform ref="mycom" :range="0.6" :WIDTH="800" :HEIGHT="100" websocketURL="ws://192.168.6.48:8082/ws/websocket/socketServer.do" :id="selectid" :arraybuffer="arraybuffer"></waveform>
+    <vue-waveform ref="mycom" :range="0.6" :WIDTH="800" :HEIGHT="100" websocketURL="ws://192.168.6.48:8082/ws/websocket/socketServer.do" :id="selectid" :arraybuffer="arraybuffer"></vue-waveform>
     <input type="file"  @change="addFile" ref="file">插入文件
     <select v-model="selectid">
       <option value="8084">8084</option>
