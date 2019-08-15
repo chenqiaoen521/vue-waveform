@@ -23,3 +23,10 @@
 * id 设备id
 * range 柱状图高度显示的比率
 * arraybuffer 字节数组
+
+##### method：
+
+* openWS() // 无参数 创建连接初始化对象
+* play() // 无参数 播放
+* pause() // 无参数 暂停
+* stop() // 无参数 停止 并销毁对象
