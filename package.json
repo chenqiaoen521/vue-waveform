@@ -1,9 +1,12 @@
 {
   "name": "vue-waveform",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "waveform wavesurfer -waveform js html 音频audio波形图",
   "author": "wuzhe",
   "private": false,
+  "main": "dist/static/js/app.umd.js",
+  "module": "dist/static/js/app.common.js",
+  "unpkg": "dist/static/js/app.umd.js",
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
@@ -11,9 +14,10 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
-    "vue": "^2.3.3"
+    
   },
   "devDependencies": {
+    "vue": "^2.3.3",
     "babel-core": "^6.22.1",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.10",

@@ -21,20 +21,8 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
-      '@': resolve('src'),
-      'common': resolve('src/common'),
-      'components': resolve('src/components'),
-      'page': resolve('src/page'),
-      'api': resolve('src/api'),
-      'base': resolve('src/base'),
-      'store': resolve('src/store'),
-      'stylus': resolve('src/common/stylus'),
-      jquery$: resolve('static/jquery-1.10.2.js'),
-      myAudio$: resolve('static/audio.js'),
+      '@': resolve('src')
     }
-  },
-  externals: {
-    jquery: 'jQuery'
   },
   module: {
     rules: [
