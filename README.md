@@ -30,3 +30,8 @@
 * play() // 无参数 播放
 * pause() // 无参数 暂停
 * stop() // 无参数 停止 并销毁对象
+
+调用方式 例如： 
+```
+this.$refs.mycom.openWS()
+```
