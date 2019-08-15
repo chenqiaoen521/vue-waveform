@@ -10,6 +10,9 @@
 
 ### 使用说明
 
+#### 使用场景
+文件类型mp3 aac 等blob 转arraybuffer
+
 #### 组件的使用 全局引入的组件
  
 #####  vue-waveform
@@ -29,7 +32,7 @@
 
 ##### method：
 
-* openWS() // 无参数 创建连接初始化对象
+* openWS() // 无参数 创建连接初始化对象  支持promise接口调用 
 * play() // 无参数 播放
 * pause() // 无参数 暂停
 * stop() // 无参数 停止 并销毁对象
