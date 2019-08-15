@@ -17,7 +17,7 @@
 <vue-waveform ref="mycom" :range="0.6" :WIDTH="800" :HEIGHT="100" websocketURL="ws://192.168.6.48:8082/ws/websocket/socketServer.do" :id="selectid" :arraybuffer="arraybuffer"></vue-waveform> 
 ```
 
-![image](https://github.com/chenqiaoen521/vue-waveform/blob/master/example.png?raw=true)
+![效果](https://github.com/chenqiaoen521/vue-waveform/blob/master/example.png)
 
 ##### props 属性：
 * WIDTH  宽度
