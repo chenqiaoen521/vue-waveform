@@ -4,7 +4,7 @@
 ### 安装
 
 -全局引入安装-
-* import {waveform} from './vue-waveform' 
+* import {waveform} from 'vue-waveform' 
 * Vue.use(waveform)
 
 

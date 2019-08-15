@@ -1,8 +1,9 @@
 {
   "name": "vue-waveform",
   "version": "1.0.1",
-  "description": "waveform wavesurfer -waveform js html 音频audio波形图",
+  "description": "waveform audio player wavesurfer -waveform js html 音频audio波形图",
   "author": "wuzhe",
+  "keyword": "waveform wavesurfer audio player 音频audio波形图",
   "private": false,
   "main": "dist/static/js/app.umd.js",
   "module": "dist/static/js/app.common.js",
