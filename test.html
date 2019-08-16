@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sketchpad demo</title>
+    <style type="text/css">
+        canvas {
+            border: 1px blue solid; 
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="500"></canvas>
+    <script type="text/javascript">
+        let isDown = false;
+		let points = [];
+		let beginPoint = null;
+		const canvas = document.querySelector('#canvas');
+		const ctx = canvas.getContext('2d');
+ 
+        // 设置线条颜色
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 1;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+ 
+        canvas.addEventListener('mousedown', down, false);
+        canvas.addEventListener('mousemove', move, false);
+        canvas.addEventListener('mouseup', up, false);
+        canvas.addEventListener('mouseout', up, false);
+ 
+        function down(evt) {
+		    isDown = true;
+		    const { x, y } = getPos(evt);
+		    points.push({x, y});
+		    beginPoint = {x, y};
+		}
+		 
+        function move(evt) {
+		    if (!isDown) return;
+		 
+		    const { x, y } = getPos(evt);
+		    points.push({x, y});
+		 
+		    if (points.length > 3) {
+		        const lastTwoPoints = points.slice(-2);
+		        const controlPoint = lastTwoPoints[0];
+		        const endPoint = {
+		            x: (lastTwoPoints[0].x + lastTwoPoints[1].x) / 2,
+		            y: (lastTwoPoints[0].y + lastTwoPoints[1].y) / 2,
+		        }
+		        drawLine(beginPoint, controlPoint, endPoint);
+		        beginPoint = endPoint;
+		    }
+		}
+ 
+        function up(evt) {
+		    if (!isDown) return;
+		    const { x, y } = getPos(evt);
+		    points.push({x, y});
+		 
+		    if (points.length > 3) {
+		        const lastTwoPoints = points.slice(-2);
+		        const controlPoint = lastTwoPoints[0];
+		        const endPoint = lastTwoPoints[1];
+		        drawLine(beginPoint, controlPoint, endPoint);
+		    }
+		    beginPoint = null;
+		    isDown = false;
+		    points = [];
+		}
+ 
+        function getPos(evt) {
+            return {
+                x: evt.clientX,
+                y: evt.clientY
+            }
+        }
+ 
+        function drawLine(beginPoint, controlPoint, endPoint) {
+		    ctx.beginPath();
+		    ctx.moveTo(beginPoint.x, beginPoint.y);
+		    ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y);
+		    ctx.stroke();
+		    ctx.closePath();
+		}
+    </script>
+</body>
+</html>

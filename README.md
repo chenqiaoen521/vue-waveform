@@ -4,6 +4,7 @@
 ### 安装
 
 -全局引入安装-
+* npm -i vue-waveform
 * import {waveform} from 'vue-waveform' 
 * Vue.use(waveform)
 

@@ -17,6 +17,10 @@ export default {
       type: Number,
       default: 1
     },
+    type: {
+      type: String,
+      default: 'bar'
+    },
     WIDTH: {
       type: Number,
       default: 500
@@ -26,19 +30,28 @@ export default {
       default: 300
     },
     arraybuffer: {
-      type: Object
+      type: ArrayBuffer
     },
     websocketURL: {
       type: String
     },
     id: {
       type: Number
+    },
+    fftSize: {
+      type: Number,
+      default: 256
     }
   },
   watch: {
     arraybuffer(vnew, old) {
       if (typeof vnew === 'object') {
         this.drawer.receive(vnew)
+      }
+    },
+    type(vnew, old) {
+      if (vnew !== old) {
+        this.drawer.warpperReceive(vnew)
       }
     }
   },
@@ -57,12 +70,14 @@ export default {
     },
     init() {
       let canvasCtx = this.$refs.canvas.getContext('2d')
-      let {WIDTH, HEIGHT, range} = this
+      let {WIDTH, HEIGHT, range, fftSize, type} = this
       this.drawer = new Drawer({
         canvasCtx,
         WIDTH,
         HEIGHT,
-        range
+        range,
+        fftSize,
+        type
       })
       this.wsPlayer = new WsPlayer({
         Mse: new Mse(),
