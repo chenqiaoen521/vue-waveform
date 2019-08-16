@@ -51,7 +51,7 @@ export default {
     },
     type(vnew, old) {
       if (vnew !== old) {
-        this.drawer.warpperReceive(vnew)
+        this.drawer.receive = this.drawer.warpperReceive(vnew)
       }
     }
   },

@@ -1,5 +1,4 @@
 require('./check-versions')()
-var request = require("request")
 var config = require('../config')
 var fs = require('fs')
 if (!process.env.NODE_ENV) {
