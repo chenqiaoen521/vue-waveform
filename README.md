@@ -3,8 +3,10 @@
 
 ### 安装
 
--全局引入安装-
 * npm -i vue-waveform
+
+-全局引入安装-
+
 * import {waveform} from 'vue-waveform' 
 * Vue.use(waveform)
 
@@ -23,11 +25,14 @@
 
 ![效果](https://github.com/chenqiaoen521/vue-waveform/blob/master/example.png)
 
+![效果2](https://github.com/chenqiaoen521/vue-waveform/blob/master/ex2.png)
+
 ##### props 属性：
 * WIDTH  宽度
 * HEIGHT  高度
 * websocketURL websock连接
 * id 设备id
+* type 类型  'line' 曲线图 'bar' 柱状图
 * range 柱状图高度显示的比率
 * arraybuffer 字节数组
 
