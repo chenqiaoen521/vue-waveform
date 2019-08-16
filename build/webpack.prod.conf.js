@@ -24,8 +24,8 @@ var webpackConfig = merge(baseWebpackConfig, {
   devtool: config.build.productionSourceMap ? '#source-map' : false,
   output: {
     path: config.build.assetsRoot,
-    filename: utils.assetsPath('js/[name].common.js'),
-    libraryTarget: 'commonjs2'
+    filename: utils.assetsPath('js/[name].umd.js'),
+    libraryTarget: 'umd'
   },
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
