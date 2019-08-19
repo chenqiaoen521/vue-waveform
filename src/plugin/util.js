@@ -5,3 +5,15 @@ export let extend = function (dst, obj) {
     }
   }
 }
+
+export function debounce (callback, delay) {
+  let timer = null
+  return function (...args) {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(function () {
+      callback.apply(this, args)
+    }, delay)
+  }
+}

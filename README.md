@@ -35,6 +35,7 @@
 * type 类型  'line' 曲线图 'bar' 柱状图
 * range 柱状图高度显示的比率
 * arraybuffer 字节数组
+* bgColor 波形图背景色
 
 ##### method：
 

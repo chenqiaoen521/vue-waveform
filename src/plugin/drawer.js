@@ -1,5 +1,5 @@
 import Analysis from './analysis'
-import { extend } from './util'
+import { extend, debounce } from './util'
 
 let defaultOpt = {
   WIDTH: 500,
@@ -17,6 +17,7 @@ export default class Drawer {
     analyser.fftSize = this.opts.fftSize
     this.analysisLine = new Analysis({WIDTH: this.opts.WIDTH})
     this.receive = this.warpperReceive(this.opts.type)
+    this.drawBar = this.drawBar.bind(this)
   }
 
   warpperReceive(type) {
@@ -54,7 +55,7 @@ export default class Drawer {
 
     analyser.getByteFrequencyData(this.dataArray)
 
-    this.opts.canvasCtx.fillStyle = 'rgb(0, 0, 0)'
+    this.opts.canvasCtx.fillStyle = this.opts.bgColor
     this.opts.canvasCtx.fillRect(0, 0, this.opts.WIDTH, this.opts.HEIGHT)
 
     let barWidth = (this.opts.WIDTH / this.bufferLength) * 1.2
@@ -77,7 +78,7 @@ export default class Drawer {
       x += barWidth + 1
     }
 
-    window.requestAnimationFrame(this.drawBar.bind(this))
+    window.requestAnimationFrame(debounce(this.drawBar, 60))
   }
 
   drawLine() {

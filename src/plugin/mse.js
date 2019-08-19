@@ -14,12 +14,16 @@ export default class Mse {
   }
 
   onSourceOpen() {
+    // let _this = this
     if (this.count !== 0) {
       return
     }
     this.count ++
     URL.revokeObjectURL(this.dom.src)
     this.sourceBuffer = this.mediaSource.addSourceBuffer('audio/aac')
+    /*this.sourceBuffer.addEventListener('updateend', function() {
+      _this.mediaSource.endOfStream()
+    })*/
   }
   play() {
     this.dom && (this.dom.play())
@@ -37,7 +41,11 @@ export default class Mse {
   }
 
   appendBuffer (buffer) {
-    this.sourceBuffer.appendBuffer(buffer)
+    try {
+      this.sourceBuffer.appendBuffer(buffer)
+    } catch (e) {
+      // 1
+    }
   }
 
   stop() {

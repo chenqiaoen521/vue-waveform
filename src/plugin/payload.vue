@@ -32,6 +32,10 @@ export default {
     arraybuffer: {
       type: ArrayBuffer
     },
+    bgColor: {
+      type: String,
+      default: 'rgb(0, 0, 0)'
+    },
     websocketURL: {
       type: String
     },
@@ -70,14 +74,15 @@ export default {
     },
     init() {
       let canvasCtx = this.$refs.canvas.getContext('2d')
-      let {WIDTH, HEIGHT, range, fftSize, type} = this
+      let {WIDTH, HEIGHT, range, fftSize, type, bgColor} = this
       this.drawer = new Drawer({
         canvasCtx,
         WIDTH,
         HEIGHT,
         range,
         fftSize,
-        type
+        type,
+        bgColor
       })
       this.wsPlayer = new WsPlayer({
         Mse: new Mse(),
