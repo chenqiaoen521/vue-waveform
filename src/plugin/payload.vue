@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     openWS() {
-      this.wsPlayer.openWs(this.websocketURL, this.id)
+      return this.wsPlayer.openWs(this.websocketURL, this.id)
     },
     play() {
       this.wsPlayer.play()
