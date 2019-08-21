@@ -54,8 +54,13 @@ export default class WsPlayer {
     this.ws && this.ws.send('STOP_LISTEN')
   }
   stop() {
-    this.ws && this.ws.send('STOP_LISTEN')
-    this.ws && this.ws.close()
-    this.pause()
+    return new Promise((resolve, reject) => {
+      this.ws && this.ws.send('STOP_LISTEN')
+      this.ws && this.ws.close()
+      this.ws.onclose = function () {
+        resolve()
+      }
+      this.mse.pause()
+    })
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <vue-waveform ref="mycom" :range="0.5" :WIDTH="800" :HEIGHT="100" :type="type" websocketURL="ws://192.168.6.48:8082/ws/websocket/socketServer.do" :id="selectid" :arraybuffer="arraybuffer"></vue-waveform>
+    <vue-waveform ref="mycom" :range="0.5" :WIDTH="rangeV" :HEIGHT="100" :type="type" :websocketURL="web" :id="selectid" :arraybuffer="arraybuffer"></vue-waveform>
     插入文件<input type="file"  @change="addFile" ref="file">
     选择设备id<select v-model="selectid">
       <option value="8084">8084</option>
@@ -14,6 +14,7 @@
     <button @click="play">play</button>
     <button @click="pause">pause</button>
     <button @click="stop">stop</button>
+    <input type="range" min="0" max="1000" v-model="rangeV" style="width:200px;">
   </div>
 </template>
 
@@ -24,8 +25,10 @@ export default {
   data() {
     return {
       selectid: 8082,
+      web: 'ws://192.168.6.48:8082/ws/websocket/socketServer.do',
       arraybuffer: undefined,
-      type: 'bar'
+      type: 'bar',
+      rangeV: 800
     }
   },
   methods: {
@@ -42,7 +45,9 @@ export default {
       }
     },
     load() {
-      this.$refs.mycom.openWS()
+      this.$refs.mycom.openWS().then(res => {
+        this.play()
+      })
     },
     play() {
       this.$refs.mycom.play()
@@ -51,7 +56,11 @@ export default {
       this.$refs.mycom.pause()
     },
     stop() {
-      this.$refs.mycom.stop()
+      this.$refs.mycom.stop().then(() => {
+        this.$refs.mycom.openWS().then(() => {
+          this.play()
+        })
+      })
     }
   }
 }

@@ -22,7 +22,6 @@ export default {
       default: 'bar'
     },
     WIDTH: {
-      type: Number,
       default: 500
     },
     HEIGHT: {
@@ -57,11 +56,22 @@ export default {
       if (vnew !== old) {
         this.drawer.receive = this.drawer.warpperReceive(vnew)
       }
+    },
+    WIDTH(vnew, old) {
+      if (vnew !== old) {
+        this.drawer.setWidth(vnew)
+      }
     }
   },
   methods: {
     openWS() {
-      return this.wsPlayer.openWs(this.websocketURL, this.id)
+      return new Promise((resolve, reject) => {
+        this.$nextTick(() => {
+          this.wsPlayer.openWs(this.websocketURL, this.id).then(() => {
+            resolve()
+          })
+        })
+      })
     },
     play() {
       this.wsPlayer.play()
@@ -70,7 +80,7 @@ export default {
       this.wsPlayer.pause()
     },
     stop() {
-      this.wsPlayer.stop()
+      return this.wsPlayer.stop()
     },
     init() {
       let canvasCtx = this.$refs.canvas.getContext('2d')

@@ -20,6 +20,10 @@ export default class Drawer {
     this.drawBar = this.drawBar.bind(this)
   }
 
+  setWidth(v) {
+    this.opts.WIDTH = v
+  }
+
   warpperReceive(type) {
     let _this = this
     if (type === 'bar') {
@@ -112,7 +116,7 @@ export default class Drawer {
 
   drawLine2() {
     let arr = this.analysisLine.mergedPeaks.map(function(item, i) { return item * 1000 })
-    this.opts.canvasCtx.fillStyle = 'rgb(0, 0, 0)'
+    this.opts.canvasCtx.fillStyle = this.opts.bgColor
     this.opts.canvasCtx.fillRect(0, 0, this.opts.WIDTH, this.opts.HEIGHT)
     this.opts.canvasCtx.lineWidth = 1
     this.opts.canvasCtx.strokeStyle = 'rgb(59, 234, 46)'
