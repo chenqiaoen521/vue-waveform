@@ -15,7 +15,7 @@ export default class Drawer {
     this.opts = Object.assign({}, defaultOpt)
     extend(this.opts, options || {})
     analyser.fftSize = this.opts.fftSize
-    this.analysisLine = new Analysis({WIDTH: this.opts.WIDTH})
+    this.analysisLine = new Analysis({WIDTH: this.opts.WIDTH, audioContext: audioContext})
     this.receive = this.warpperReceive(this.opts.type)
     this.drawBar = this.drawBar.bind(this)
   }
@@ -28,16 +28,21 @@ export default class Drawer {
     let _this = this
     if (type === 'bar') {
       return function (arraybuffer) {
-        audioContext.decodeAudioData(arraybuffer, function(buffer) {
-          _this.analysisBar(buffer)
+        return new Promise((resolve, reject) => {
+          audioContext.decodeAudioData(arraybuffer, function(buffer) {
+            _this.analysisBar(buffer)
+            resolve(buffer)
+          })
         })
       }
     } else if (type === 'line') {
       return function (arraybuffer) {
-        audioContext.decodeAudioData(arraybuffer, function(buffer) {
-          // _this.analysis(buffer)
-          _this.analysisLine.getPeaks(buffer)
-          _this.drawLine2()
+        return new Promise((resolve, reject) => {
+          audioContext.decodeAudioData(arraybuffer, function(buffer) {
+            _this.analysisLine.getPeaks(buffer)
+            _this.drawLine2()
+            resolve(buffer)
+          })
         })
       }
     }
@@ -125,7 +130,7 @@ export default class Drawer {
     let x = 0
     let len = arr.length
     for (let i = 0; i < len; i++) {
-      let y = arr[i] + (this.opts.HEIGHT / 2)
+      let y = arr[i] * 0.1 + (this.opts.HEIGHT / 2)
       if (i === 0) {
         this.opts.canvasCtx.moveTo(x, y)
       } else {

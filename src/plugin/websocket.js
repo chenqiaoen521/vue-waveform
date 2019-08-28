@@ -55,12 +55,17 @@ export default class WsPlayer {
   }
   stop() {
     return new Promise((resolve, reject) => {
-      this.ws && this.ws.send('STOP_LISTEN')
-      this.ws && this.ws.close()
-      this.ws.onclose = function () {
-        resolve()
+      if (Object.prototype.toString.call(this.ws) === '[object WebSocket]') {
+        this.ws.send('STOP_LISTEN')
+        this.ws.onclose = function () {
+          resolve(1)
+        }
+        this.mse && this.mse.pause()
+        this.ws.close()
+        this.ws = null
+      } else {
+        resolve(0)
       }
-      this.mse.pause()
     })
   }
 }

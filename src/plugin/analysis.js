@@ -1,12 +1,87 @@
 export default class Analysis {
+  static scriptBufferSize = 256
   constructor (options) {
     this.WIDTH = options.WIDTH
-    this.init()
     this.pixelRatio = 1
+    this.params = options
+    this.ac = options.audioContext || this.getAudioContext()
+    this.init()
   }
 
   init() {
     this.setLength(0)
+    // this.createVolumeNode()
+    // this.createScriptNode()
+    // this.createAnalyserNode()
+    // this.addOnAudioProcess()
+  }
+
+  createSource() {
+    this.disconnectSource()
+    this.source = this.ac.createBufferSource()
+    this.source.buffer = this.buffer
+    this.source.connect(this.analyser)
+  }
+
+  createVolumeNode() {
+    if (this.ac.createGain) {
+      this.gainNode = this.ac.createGain()
+    } else {
+      this.gainNode = this.ac.createGainNode()
+    }
+    this.gainNode.connect(this.ac.destination)
+  }
+
+  play() {
+    if (!this.buffer) {
+      return
+    }
+    this.createSource()
+    this.source.start(0)
+  }
+
+  pause() {
+    this.source && this.source.stop(0)
+  }
+
+  disconnectSource() {
+    if (this.source) {
+      this.source.disconnect()
+    }
+  }
+
+  createAnalyserNode() {
+    this.analyser = this.ac.createAnalyser()
+    this.analyser.connect(this.gainNode)
+  }
+
+  createScriptNode() {
+    if (this.params.audioScriptProcessor) {
+      this.scriptNode = this.params.audioScriptProcessor
+    } else {
+      if (this.ac.createScriptProcessor) {
+        this.scriptNode = this.ac.createScriptProcessor(
+          Analysis.scriptBufferSize
+        )
+      } else {
+        this.scriptNode = this.ac.createJavaScriptNode(
+          Analysis.scriptBufferSize
+        )
+      }
+    }
+    this.scriptNode.connect(this.ac.destination)
+  }
+
+  addOnAudioProcess() {
+    let dom = document.querySelector('.wave-mask-wrapper')
+    this.scriptNode.onaudioprocess = () => {
+      let time = this.ac.currentTime
+      let p = time / this.buffer.duration
+      dom.style = `width: ${p * 100}%`
+    }
+  }
+  removeOnAudioProcess() {
+    this.scriptNode.onaudioprocess = null
   }
 
   setLength(length) {
@@ -15,7 +90,7 @@ export default class Analysis {
     }
     this.splitPeaks = []
     this.mergedPeaks = []
-    const channels = 1
+    const channels = this.buffer ? this.buffer.numberOfChannels : 1
     let c
     for (c = 0; c < channels; c++) {
       this.splitPeaks[c] = []
@@ -31,13 +106,14 @@ export default class Analysis {
   }
 
   getPeaks(buffer) {
+    this.buffer = buffer
     this.setLength(this.WIDTH)
     let parentWidth = this.getWidth()
     const sampleSize = buffer.length / parentWidth
     const sampleStep = ~~(sampleSize / 10) || 1
     const first = 0
-    const last = parentWidth
-    const channels = 1
+    const last = parentWidth - 1
+    const channels = this.buffer.numberOfChannels
     let c
     for (c = 0; c < channels; c++) {
       const peaks = this.splitPeaks[c]

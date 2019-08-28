@@ -14,7 +14,7 @@
 ### 使用说明
 
 #### 使用场景
-文件类型mp3 aac 等blob 转arraybuffer
+实时websocket流 文件类型mp3 aac 等blob 转arraybuffer
 
 #### 组件的使用 全局引入的组件
  
@@ -47,4 +47,26 @@
 调用方式 例如： 
 ```
 this.$refs.mycom.openWS()
+```
+
+
+#### 使用场景
+### 音频文件播放
+![效果3](https://github.com/chenqiaoen521/vue-waveform/blob/master/ex3.png)
+
+```
+<vue-waveplayer @ready=ready ref="mycom" :WIDTH="800" :HEIGHT="100" bgColor="#fff" :URL="URL"></vue-waveplayer>
+
+mounted() {
+  this.URL = './static/3.aac'
+},
+  methods: {
+    click() {
+      this.$refs.mycom.seekTo(this.timeline)
+    },
+    ready() {
+      this.$refs.mycom.seekTo(this.timeline)
+    }
+  }
+
 ```

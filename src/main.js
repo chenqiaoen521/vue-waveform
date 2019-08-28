@@ -1,6 +1,6 @@
+import './css.styl'
 import Vue from 'vue'
 import App from './App'
-
 import {waveform} from './vue-waveform'
 
 Vue.use(waveform)

@@ -63,6 +63,10 @@ export default {
       }
     }
   },
+  destroyed() {
+    this.wsPlayer && this.wsPlayer.stop()
+    this.wsPlayer = null
+  },
   methods: {
     openWS() {
       return new Promise((resolve, reject) => {
