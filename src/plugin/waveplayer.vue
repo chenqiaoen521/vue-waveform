@@ -2,7 +2,7 @@
   <div ref="wavePlayer" class="wave-player">
     <div ref="waveContainer" class="wave-container">
       <canvas ref="canvas" id="canvas"  :width="WIDTH" :height="HEIGHT"></canvas>
-      <div  ref="waveMask" class="wave-mask-wrapper"></div>
+      <div v-show="!isLoad" ref="waveMask" class="wave-mask-wrapper"></div>
       <img v-show="isLoad" class="load" src="./loading.gif" alt="">
     </div>
     <div class="wave-audio">
@@ -80,6 +80,9 @@ export default {
           url: vnew,
           success: function (e) {
             _this.arraybuffer = e
+          },
+          error: function () {
+            this.isLoad = false
           }
         })
       }

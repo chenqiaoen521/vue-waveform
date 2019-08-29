@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <vue-waveplayer @ready=ready ref="mycom" :range="0.5" :WIDTH="rangeV" :HEIGHT="100" bgColor="#fff" :type="type" :URL="web" :id="selectid" ></vue-waveplayer>
+    <vue-waveplayer @ready=ready ref="mycom" :range="0.1" :WIDTH="rangeV" :HEIGHT="100" bgColor="#fff" :type="type" :URL="web" :id="selectid" ></vue-waveplayer>
     <h1>1111</h1>
     <input type="text" v-model="timeline">
     <button @click="click">seek</button>

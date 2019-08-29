@@ -130,7 +130,7 @@ export default class Drawer {
     let x = 0
     let len = arr.length
     for (let i = 0; i < len; i++) {
-      let y = arr[i] * 0.1 + (this.opts.HEIGHT / 2)
+      let y = arr[i] * this.opts.range + (this.opts.HEIGHT / 2)
       if (i === 0) {
         this.opts.canvasCtx.moveTo(x, y)
       } else {
