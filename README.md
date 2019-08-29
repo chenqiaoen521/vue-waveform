@@ -55,6 +55,9 @@ this.$refs.mycom.openWS()
 ![效果3](https://github.com/chenqiaoen521/vue-waveform/blob/master/ex3.png)
 
 ```
+import {waveform} from 'vue-waveform'
+import 'vue-waveform/dist/static/css/app.css'
+
 <vue-waveplayer @ready=ready :range="0.3" ref="mycom" :WIDTH="800" :HEIGHT="100" bgColor="#fff" :URL="URL"></vue-waveplayer>
 
 mounted() {
