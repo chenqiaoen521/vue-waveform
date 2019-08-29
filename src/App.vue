@@ -4,10 +4,14 @@
     <h1>1111</h1>
     <input type="text" v-model="timeline">
     <button @click="click">seek</button>
+    <div style="margin-top: 100px;">
+      <canvas ref="timeline" width="800" height="62" style="cursor: pointer;border:1px solid #2b2f33;background-color: #2b2f33;"  ondragstart="return false;"></canvas>
+    </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+import Timeline from './plugin/timeline'
 export default {
   name: 'app',
   data() {
@@ -21,7 +25,10 @@ export default {
     }
   },
   mounted() {
-    this.web = './static/3.aac'
+    this.web = './static/1.aac'
+    this.t = new Timeline({
+      canvas: this.$refs.timeline
+    })
   },
   methods: {
     click() {

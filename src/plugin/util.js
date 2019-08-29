@@ -1,11 +1,11 @@
-export let extend = function (dst, obj) {
-  for (var i in obj) {
-    if (obj.hasOwnProperty(i)) {
-      dst[i] = obj[i]
-    }
-  }
-}
-
+/**
+ *
+ *
+ * @export
+ * @param {*} callback
+ * @param {*} delay
+ * @returns
+ */
 export function debounce (callback, delay) {
   let timer = null
   return function (...args) {
@@ -18,6 +18,12 @@ export function debounce (callback, delay) {
   }
 }
 
+/**
+ *
+ *
+ * @export
+ * @param {*} options
+ */
 export function load (options) {
   let opt = {
     url: options.url,
@@ -52,6 +58,21 @@ export function load (options) {
           opt.error.call(xhr, res)
         }
       }
+    }
+  }
+}
+
+/**
+ *
+ *
+ * @export
+ * @param {*} dst
+ * @param {*} obj
+ */
+export function extend (dst, obj) {
+  for (var i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      dst[i] = obj[i]
     }
   }
 }
