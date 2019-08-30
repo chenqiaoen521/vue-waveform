@@ -9,8 +9,8 @@ export default class Timeline {
     timecell: undefined,
     minutes_per_step: [1, 2, 5, 10, 15, 20, 30, 60, 120, 180, 240, 360, 720, 1440], // min/格
     graduation_step: 20, //刻度间最小宽度，单位px
-    hours_per_ruler: 24, //时间轴显示24小时
-    start_timestamp: new Date().getTime() - 12 * 60 * 60 * 1000,
+    hours_per_ruler: 0.4975, //时间轴显示24小时
+    start_timestamp: 0,
     distance_between_gtitle: 80,
     zoom: 24,
     g_isMousedown: false, //拖动mousedown标记
@@ -44,13 +44,13 @@ export default class Timeline {
     this.add_graduations(start_left_timestamp)
     this.add_cells(time_cell)
     this.drawLine(0, this.canVansH, this.canvasW, this.canVansH, `rgb(151, 158, 167)`, 1) //底线
-    this.drawLine(this.canvasW / 2, 0, this.canvasW / 2, 33, `rgb(64, 196, 255)`, 2) //中间播放点时间线
+    // this.drawLine(this.canvasW / 2, 0, this.canvasW / 2, 33, `rgb(64, 196, 255)`, 2) //中间播放点时间线
     if (!redraw_flag) { //只有第一次进入才需要添加事件
       this.add_events()
     }
-    let time = start_left_timestamp + (this.hours_per_ruler * 3600 * 1000) / 2
+    /*let time = start_left_timestamp + (this.hours_per_ruler * 3600 * 1000) / 2
     this.ctx.fillStyle = `rgb(64, 196, 255)`
-    this.ctx.fillText(this.changeTime(time), this.canvasW / 2 - 60, 50)
+    this.ctx.fillText(this.changeTime(time), this.canvasW / 2 - 60, 50) */
   }
 
   draw_cell_bg() {
@@ -64,6 +64,7 @@ export default class Timeline {
    * @param {*} start_left_timestamp
    * @memberof Timeline
    */
+  /* eslint-disable */
   add_graduations(start_left_timestamp) {
     let px_per_min = this.canvasW / (this.hours_per_ruler * 60) // px/min
     let px_per_ms = this.canvasW / (this.hours_per_ruler * 60 * 60 * 1000) // px/ms
@@ -76,7 +77,6 @@ export default class Timeline {
         break
       }
     }
-
     let medium_step = 30
     for (let i = 0; i < this.minutes_per_step.length; i++) {
       if (this.distance_between_gtitle / px_per_min <= this.minutes_per_step[i]) {
@@ -91,20 +91,20 @@ export default class Timeline {
     let ms_offset = this.ms_to_next_step(start_left_timestamp, min_per_step * 60 * 1000) //开始的偏移时间 ms
     let px_offset = ms_offset * px_per_ms //开始的偏移距离 px
     let ms_per_step = px_per_step / px_per_ms // ms/step
-    for (let i = 0; i < num_steps; i++) {
-      graduation_left = px_offset + i * px_per_step // 距离=开始的偏移距离+格数*px/格
-      graduation_time = start_left_timestamp + ms_offset + i * ms_per_step //时间=左侧开始时间+偏移时间+格数*ms/格
+    for (let j = 0; j < num_steps; j++) {
+      graduation_left = px_offset + j * px_per_step // 距离=开始的偏移距离+格数*px/格
+      graduation_time = start_left_timestamp + ms_offset + j * ms_per_step //时间=左侧开始时间+偏移时间+格数*ms/格
       let date = new Date(graduation_time)
       if (date.getUTCHours() === 0 && date.getUTCMinutes() === 0) {
         lineH = 25
         let big_date = this.graduation_title(date)
-        this.ctx.fillText(big_date, graduation_left - 20, 30)
-        this.ctx.fillStyle = `rgba(151,158,167,1)`
+        this.ctx.fillStyle = `rgba(255,255,255,1)`
+        this.ctx.fillText(big_date, graduation_left, 30)
       } else if (graduation_time / (60 * 1000) % medium_step === 0) {
         lineH = 15
         let middle_date = this.graduation_title(date)
-        this.ctx.fillText(middle_date, graduation_left - 20, 30)
         this.ctx.fillStyle = `rgba(151,158,167,1)`
+        this.ctx.fillText(middle_date, graduation_left - 20, 30)
       } else {
         lineH = 10
       }
@@ -314,15 +314,15 @@ export default class Timeline {
     }
     let hour = newTime.getHours()
     if (hour < 10) {
-      let hour = '0' + hour
+      hour = '0' + hour
     }
     let minute = newTime.getMinutes()
     if (minute < 10) {
-      let minute = '0' + minute
+      minute = '0' + minute
     }
     let second = newTime.getSeconds()
     if (second < 10) {
-      let second = '0' + second
+      second = '0' + second
     }
     return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second
   }

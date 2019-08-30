@@ -25,7 +25,7 @@ export default {
     }
   },
   mounted() {
-    this.web = './static/1.aac'
+    this.web = './static/3.aac'
     this.t = new Timeline({
       canvas: this.$refs.timeline
     })

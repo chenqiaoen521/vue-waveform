@@ -60,7 +60,3 @@ typings/
 # next.js build output
 .next
 
-static/
-
-
-src/
