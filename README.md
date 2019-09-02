@@ -52,14 +52,23 @@ this.$refs.mycom.openWS()
 
 #### 使用场景
 ### 音频文件播放
+##播放器
 ![效果3](https://github.com/chenqiaoen521/vue-waveform/blob/master/ex3.png)
-
+##时间轴
+![效果3](https://github.com/chenqiaoen521/vue-waveform/blob/master/ex4.png)
 ```
 import {waveform} from 'vue-waveform'
 import 'vue-waveform/dist/static/css/app.css'
 
 <vue-waveplayer @ready=ready :range="0.3" ref="mycom" :WIDTH="800" :HEIGHT="100" bgColor="#fff" :URL="URL"></vue-waveplayer>
 
+
+##### props 属性：
+* WIDTH  宽度 动态改变宽度
+* HEIGHT  高度
+* range 高度显示的比率
+* bgColor 波形图背景色
+* playType 1.是audio标签 2.是 时间轴
 mounted() {
   this.URL = './static/3.aac'
 },
