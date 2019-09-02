@@ -70,6 +70,7 @@ import 'vue-waveform/dist/static/css/app.css'
 * range 高度显示的比率
 * bgColor 波形图背景色
 * playType 1.是audio标签 2.是 时间轴
+* URL 播放文件地址
 mounted() {
   this.URL = './static/3.aac'
 },
