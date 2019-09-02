@@ -63,7 +63,7 @@ import 'vue-waveform/dist/static/css/app.css'
 
 <vue-waveplayer @ready=ready :range="0.3" ref="mycom" :WIDTH="800" :HEIGHT="100" bgColor="#fff" :URL="URL"></vue-waveplayer>
 
-
+```
 ##### props 属性：
 * WIDTH  宽度 动态改变宽度
 * HEIGHT  高度
@@ -71,6 +71,11 @@ import 'vue-waveform/dist/static/css/app.css'
 * bgColor 波形图背景色
 * playType 1.是audio标签 2.是 时间轴
 * URL 播放文件地址
+
+##### method 方法：
+* stop  参数 无
+* seekTo 参数 毫秒
+```
 mounted() {
   this.URL = './static/3.aac'
 },
