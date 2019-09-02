@@ -52,11 +52,11 @@ this.$refs.mycom.openWS()
 
 #### 使用场景
 ### 音频文件播放
-## 播放器
+##### 带播放器界面：
 ![效果3](https://github.com/chenqiaoen521/vue-waveform/blob/master/ex3.png)
-
+##### 带时间轴界面：
 ![效果3](https://github.com/chenqiaoen521/vue-waveform/blob/master/ex4.png)
-## 时间轴
+
 ```
 import {waveform} from 'vue-waveform'
 import 'vue-waveform/dist/static/css/app.css'
