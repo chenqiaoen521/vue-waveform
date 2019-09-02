@@ -54,8 +54,9 @@ this.$refs.mycom.openWS()
 ### 音频文件播放
 ##播放器
 ![效果3](https://github.com/chenqiaoen521/vue-waveform/blob/master/ex3.png)
-##时间轴
+
 ![效果3](https://github.com/chenqiaoen521/vue-waveform/blob/master/ex4.png)
+##时间轴
 ```
 import {waveform} from 'vue-waveform'
 import 'vue-waveform/dist/static/css/app.css'
