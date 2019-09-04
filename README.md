@@ -1,20 +1,19 @@
-# vue-waveform 如何使用
+# Usage
 
 
-### 安装
+### install
 
 * npm -i vue-waveform
 
--全局引入安装-
 
 * import {waveform} from 'vue-waveform' 
 * Vue.use(waveform)
 
 
-### 使用说明
+### Instructions
 
-#### 使用场景
-实时websocket流 文件类型mp3 aac 等blob 转arraybuffer
+#### scene
+websocket arraybuffer file mp3 aac blob arraybuffer
 
 #### 组件的使用 全局引入的组件
  
@@ -27,7 +26,7 @@
 
 ![效果2](https://github.com/chenqiaoen521/vue-waveform/blob/master/ex2.png)
 
-##### props 属性：
+##### props
 * WIDTH  宽度 动态改变宽度
 * HEIGHT  高度
 * websocketURL websock连接
@@ -50,11 +49,11 @@ this.$refs.mycom.openWS()
 ```
 
 
-#### 使用场景
-### 音频文件播放
-##### 带播放器界面：
+#### scene
+### audioplayer
+##### audioUI：
 ![效果3](https://github.com/chenqiaoen521/vue-waveform/blob/master/ex3.png)
-##### 带时间轴界面：
+##### timelineUI:
 ![效果3](https://github.com/chenqiaoen521/vue-waveform/blob/master/ex4.png)
 
 ```
@@ -64,8 +63,8 @@ import 'vue-waveform/dist/static/css/app.css'
 <vue-waveplayer @ready=ready :range="0.3" ref="mycom" :WIDTH="800" :HEIGHT="100" bgColor="#fff" :URL="URL"></vue-waveplayer>
 
 ```
-##### props 属性：
-* WIDTH  宽度 动态改变宽度
+##### props ：
+* WIDTH  宽度 
 * HEIGHT  高度
 * range 高度显示的比率
 * bgColor 波形图背景色
