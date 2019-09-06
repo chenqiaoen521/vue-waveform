@@ -2,6 +2,7 @@ export default class Mse {
 
   constructor() {
     this.initMediaSource()
+    this.buffer = []
   }
 
   initMediaSource() {
@@ -11,6 +12,7 @@ export default class Mse {
     dom.src = window.URL.createObjectURL(this.mediaSource)
     this.mediaSource.addEventListener('sourceopen', this.onSourceOpen.bind(this))
     this.count = 0
+    this.first = true
   }
 
   onSourceOpen() {
@@ -24,6 +26,7 @@ export default class Mse {
     /*this.sourceBuffer.addEventListener('updateend', function() {
       _this.mediaSource.endOfStream()
     })*/
+    this.event()
   }
   play() {
     this.dom && (this.dom.play())
@@ -36,15 +39,19 @@ export default class Mse {
   event() {
     let self = this
     self.sourceBuffer.addEventListener('updateend', function () {
-      self.dom.play()
+      let file = new Uint8Array(self.buffer).buffer
+      this.appendBuffer(file)
+      self.buffer = []
     })
   }
 
   appendBuffer (buffer) {
-    try {
+    if (this.first) {
       this.sourceBuffer.appendBuffer(buffer)
-    } catch (e) {
-      // 1
+      this.first = false
+    } else {
+      let array = Array.prototype.slice.call(new Uint8Array(buffer))
+      this.buffer.push.apply(this.buffer, array)
     }
   }
 
@@ -53,6 +60,7 @@ export default class Mse {
     this.dom = null
     this.mediaSource = null
     this.initMediaSource()
+    this.buffer = []
   }
 
 }

@@ -1,41 +1,54 @@
 <template>
   <div id="app">
-    <vue-waveplayer @ready=ready ref="mycom" :range="0.1" :WIDTH="rangeV" :HEIGHT="100" bgColor="#fff" :type="type" :URL="web" :id="selectid" ></vue-waveplayer>
+    <div v-show="isshow">
+      <vue-waveplayer  @ready=ready ref="mycom" :range="0.4" :WIDTH="rangeV" :HEIGHT="100" bgColor="#fff" :type="type" :playType="playtype" :URL="web"  ></vue-waveplayer>
+    </div>
     <h1>1111</h1>
-    <input type="text" v-model="timeline">
-    <button @click="click">seek</button>
-    <div style="margin-top: 100px;">
-      <canvas ref="timeline" width="800" height="62" style="cursor: pointer;border:1px solid #2b2f33;background-color: #2b2f33;"  ondragstart="return false;"></canvas>
+     <h1>1111</h1>
+      <h1>1111</h1>
+       <h1>1111</h1>
+        <h1>1111</h1>
+         <h1>1111</h1>
+    <select v-model="web">
+      <option value ="./static/1.aac">./static/1.aac</option>
+      <option value ="./static/3.aac">./static/3.aac</option>
+      <option value ="./static/4.aac">./static/4.aac</option>
+    </select>
+    <button @click="click">点击显示音频插件</button>
+    <div>
+      <wsy></wsy>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-import Timeline from './plugin/timeline'
+import wsy from './ws'
 export default {
   name: 'app',
+  components: {
+    wsy
+  },
   data() {
     return {
-      timeline: '25000',
+      isshow: false,
       selectid: 8082,
       web: '',
       arraybuffer: undefined,
       type: 'line',
-      rangeV: 800
+      rangeV: 800,
+      playtype: 2
     }
   },
   mounted() {
-    this.web = './static/3.aac'
-    this.t = new Timeline({
-      canvas: this.$refs.timeline
-    })
+    // this.web = './static/1.aac'
   },
   methods: {
     click() {
-      this.$refs.mycom.seekTo(this.timeline)
+      this.isshow = true
+      this.web = './static/1.aac'
     },
     ready() {
-      this.$refs.mycom.seekTo(this.timeline)
+      // this.$refs.mycom.seekTo(this.timeline)
     }
   }
 }

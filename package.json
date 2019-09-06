@@ -1,6 +1,6 @@
 {
   "name": "vue-waveform",
-  "version": "2.2.4",
+  "version": "2.2.7",
   "description": "waveform audio player wavesurfer -waveform js html 音频audio波形图",
   "author": "wuzhe",
   "keywords": "waveform wavesurfer audio player 音频audio波形图",
@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "vue": "^2.3.3",
-    "babel-core": "^6.22.1",
+    "babel-core": "^6.22.1",              
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.10",
     "babel-plugin-transform-runtime": "^6.22.0",

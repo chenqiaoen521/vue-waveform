@@ -1,11 +1,24 @@
 const requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame
+import bus from './event'
 export default class Media {
   constructor(params) {
+    this.init(params)
+  }
+
+  init(params) {
     this.params = params
     this.params.duration = this.getDuration()
     this.process = this.process.bind(this)
+    this.params.media.src = params.url
+    let _this = this
+    this.params.media.oncanplay = () => {
+      _this.params.media.play()
+    }
+    this.params.media.onerror = function (e) {
+      console.log(e)
+    }
     this.params.media.onplay = () => {
-      this.createTimer()
+      _this.createTimer()
     }
   }
 
@@ -33,6 +46,7 @@ export default class Media {
     let dom = this.params.dom
     let p = time / this.params.duration
     dom.style = `width: ${this.params.length * p}px`
+    bus.$emit('process', this.params.length * p)
   }
 
   isPaused() {
@@ -40,5 +54,9 @@ export default class Media {
   }
   play() {
     this.params.media.play()
+  }
+
+  stop() {
+    this.params.media && this.params.media.pause()
   }
 }

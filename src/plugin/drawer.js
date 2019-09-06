@@ -24,6 +24,12 @@ export default class Drawer {
     this.opts.WIDTH = v
   }
 
+  destory() {
+    if (this.opts && this.opts.canvasCtx) {
+      this.opts.canvasCtx.clearRect(0, 0, this.opts.WIDTH, this.opts.HEIGHT)
+    }
+  }
+
   warpperReceive(type) {
     let _this = this
     if (type === 'bar') {

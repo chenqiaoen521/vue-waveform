@@ -5,28 +5,43 @@
       <div v-show="!isLoad" ref="waveMask" class="wave-mask-wrapper"></div>
       <img v-show="isLoad" class="load" src="./loading.gif" alt="">
     </div>
-    <div class="wave-audio">
+    <div v-show="playType === 1" class="wave-audio">
       <audio ref="waveAudio" volume="100" preload="true" controls :src="URL"></audio>
     </div>
+    <canvas v-show="playType === 2" ref="timeline" :width="WIDTH" height="62" style="cursor: pointer;border:1px solid #2b2f33;background-color: #2b2f33;"  ondragstart="return false;"></canvas>
   </div>
 </template>
 <script type="text/ecmascript-6">
 import Drawer from './drawer.js'
 import {load} from './util'
+import bus from './event'
 import Media from './media'
+import Timeline from './timeline'
 export default {
   name: '',
   mounted() {
     this.init()
     let _this = this
-    this.$refs.wavePlayer.style = `width: ${this.WIDTH}px;height: ${this.HEIGHT + 40}px;`
-    this.$on('ready', function () {
+    this.$refs.wavePlayer.style = `width: ${this.WIDTH}px;height: ${this.HEIGHT + 64}px;`
+    this.$on('ready', function (e) {
+      if (_this.playType === 2) {
+        _this.timeline = new Timeline({
+          canvas: this.$refs.timeline,
+          hours_per_ruler: e / 3600,
+          sec_per_my: e
+        })
+        bus.$on('process', function (e) {
+          let event = {}
+          event.pageX = e
+          _this.timeline.mousemoveFunc(event)
+        })
+      }
       this.$refs.waveContainer.addEventListener('click', function (e) {
         let pos = e.clientX - this.getBoundingClientRect().left
         if (_this.media.isPaused()) {
           _this.$refs.waveMask.style = `width: ${pos}px`
         }
-        _this.$refs.waveAudio.currentTime = (pos / _this.WIDTH) * _this.media.getDuration()
+        _this.media.params.media.currentTime = (pos / _this.WIDTH) * _this.media.getDuration()
       }, false)
     })
   },
@@ -44,6 +59,9 @@ export default {
     range: {
       type: Number,
       default: 1
+    },
+    playType: {
+      default: 1 // 1 audio标签 2 时间轴
     },
     type: {
       type: String,
@@ -74,12 +92,14 @@ export default {
   watch: {
     URL(vnew, old) {
       let _this = this
+      this.isLoad = true
       if (vnew !== old) {
-        this.isLoad = true
         load({
           url: vnew,
           success: function (e) {
             _this.arraybuffer = e
+            _this.$refs.waveMask.style = 'width: 0px'
+            _this.timeline && _this.timeline.clearCanvas()
           },
           error: function () {
             this.isLoad = false
@@ -89,13 +109,19 @@ export default {
     },
     arraybuffer(vnew, old) {
       if (typeof vnew === 'object') {
+        this.media && this.media.stop() // 先关闭
+        this.drawer && this.drawer.destory() // 先关闭
         this.buffer = this.drawer.receive(vnew)
         let _this = this
         this.$nextTick(() => {
           _this.buffer.then(res => {
             _this.isLoad = false
-            _this.media = new Media({media: _this.$refs.waveAudio, duration: res.duration, length: _this.WIDTH, dom: _this.$refs.waveMask})
-            _this.$emit('ready')
+            if (_this.playType === 1) {
+              _this.media = new Media({media: _this.$refs.waveAudio, duration: res.duration, length: _this.WIDTH, dom: _this.$refs.waveMask, url: _this.URL})
+            } else if (_this.playType === 2) {
+              _this.media = new Media({media: new Audio(), duration: res.duration, length: _this.WIDTH, dom: _this.$refs.waveMask, url: _this.URL})
+            }
+            _this.$emit('ready', res.duration)
           })
         })
       }
@@ -116,6 +142,10 @@ export default {
     this.wsPlayer = null
   },
   methods: {
+    stop() {
+      this.media && this.media.stop() // 先关闭
+      this.drawer && this.drawer.destory() // 先关闭
+    },
     seekTo(start) {
       start = start / 1000
       this.$refs.waveAudio.currentTime = start

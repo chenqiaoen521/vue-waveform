@@ -9,7 +9,7 @@ export default class Timeline {
     timecell: undefined,
     minutes_per_step: [1, 2, 5, 10, 15, 20, 30, 60, 120, 180, 240, 360, 720, 1440], // min/格
     graduation_step: 20, //刻度间最小宽度，单位px
-    hours_per_ruler: 0.4975, //时间轴显示24小时
+    hours_per_ruler: 24, //时间轴显示24小时
     start_timestamp: 0,
     distance_between_gtitle: 80,
     zoom: 24,
@@ -40,17 +40,18 @@ export default class Timeline {
    * @memberof Timeline
    */
   init(start_left_timestamp, time_cell, redraw_flag) {
+    this.clearCanvas()
     this.draw_cell_bg()
     this.add_graduations(start_left_timestamp)
     this.add_cells(time_cell)
-    this.drawLine(0, this.canVansH, this.canvasW, this.canVansH, `rgb(151, 158, 167)`, 1) //底线
-    // this.drawLine(this.canvasW / 2, 0, this.canvasW / 2, 33, `rgb(64, 196, 255)`, 2) //中间播放点时间线
+    // this.drawLine(0, this.canVansH, this.canvasW, this.canVansH, `rgb(151, 158, 167)`, 1) //底线
+    this.drawLine(this.canvasW, 0, this.canvasW, 20, `rgb(64, 196, 255)`, 2) //中间播放点时间线
     if (!redraw_flag) { //只有第一次进入才需要添加事件
-      this.add_events()
+      // this.add_events()
     }
-    /*let time = start_left_timestamp + (this.hours_per_ruler * 3600 * 1000) / 2
+    let time = start_left_timestamp + (this.hours_per_ruler * 3600 * 1000)
     this.ctx.fillStyle = `rgb(64, 196, 255)`
-    this.ctx.fillText(this.changeTime(time), this.canvasW / 2 - 60, 50) */
+    this.ctx.fillText(this.changeTime(time), this.canvasW - 35, 30)
   }
 
   draw_cell_bg() {
@@ -68,6 +69,7 @@ export default class Timeline {
   add_graduations(start_left_timestamp) {
     let px_per_min = this.canvasW / (this.hours_per_ruler * 60) // px/min
     let px_per_ms = this.canvasW / (this.hours_per_ruler * 60 * 60 * 1000) // px/ms
+    let px_per_sec = this.canvasW / this.sec_per_my // px/ms
     let px_per_step = this.graduation_step  // px/格 默认最小值20px
     let min_per_step = px_per_step / px_per_min // min/格
     for (let i = 0; i < this.minutes_per_step.length; i++) {
@@ -84,7 +86,21 @@ export default class Timeline {
         break
       }
     }
+
+    /*let sec_per_step
+    for (let i = 0; i < this.minutes_per_step.length; i++) {
+      if (px_per_sec <= this.minutes_per_step[i]) {
+        sec_per_step = this.minutes_per_step[i]
+        px_per_step = sec_per_step
+        break
+      }
+    }*/
+
     let num_steps = this.canvasW / px_per_step //总格数
+    // let num_steps = this.canvasW / sec_per_step //总格数
+    // px_per_step = sec_per_step
+
+
     let graduation_left
     let graduation_time
     let lineH
@@ -95,20 +111,53 @@ export default class Timeline {
       graduation_left = px_offset + j * px_per_step // 距离=开始的偏移距离+格数*px/格
       graduation_time = start_left_timestamp + ms_offset + j * ms_per_step //时间=左侧开始时间+偏移时间+格数*ms/格
       let date = new Date(graduation_time)
-      if (date.getUTCHours() === 0 && date.getUTCMinutes() === 0) {
+      if (date.getUTCHours() === 0 && date.getUTCMinutes() === 0 && this.sec_per_my > 60) {
         lineH = 25
         let big_date = this.graduation_title(date)
         this.ctx.fillStyle = `rgba(255,255,255,1)`
         this.ctx.fillText(big_date, graduation_left, 30)
-      } else if (graduation_time / (60 * 1000) % medium_step === 0) {
+      } else if (Math.round(graduation_time / (60 * 1000)) % medium_step === 0) {
         lineH = 15
         let middle_date = this.graduation_title(date)
         this.ctx.fillStyle = `rgba(151,158,167,1)`
         this.ctx.fillText(middle_date, graduation_left - 20, 30)
       } else {
         lineH = 10
+        // this.ctx.fillStyle = `rgba(151,158,167,1)`
+        // let middle_date = this.graduation_sec(date)
+        // this.ctx.fillText(middle_date, graduation_left - 20, 30)
       }
       this.drawLine(graduation_left, 0, graduation_left, lineH, `rgba(151,158,167,1)`, 1)
+    }
+
+    if (this.sec_per_my < 61) {
+      let sec_step = this.canvasW / this.sec_per_my // 1s 的距离
+      let sec_per_step
+      for (let i = 0; i < this.minutes_per_step.length; i++) {
+        if (sec_step <= this.minutes_per_step[i]) {
+          sec_per_step = this.minutes_per_step[i]
+          break
+        }
+      }
+      let num = this.canvasW / sec_per_step
+      let step_sec_my = sec_per_step /  (this.canvasW / this.sec_per_my)// 1步距离的秒数
+      graduation_left = 0
+      let sec_time = 0
+      for (let k = 0; k < num; k++) {
+        this.drawLine(graduation_left, 0, graduation_left, 10, `rgba(151,158,167,1)`, 1)
+        if (k % 4 === 0) {
+          this.ctx.fillStyle = `rgba(151,158,167,1)`
+          let sec = '0:00:'
+          if (Math.round(sec_time) > 9) {
+            sec += Math.round(sec_time)
+          } else {
+            sec += '0' + Math.round(sec_time)
+          }
+          this.ctx.fillText(sec, graduation_left + 5, 30)
+        }
+        graduation_left += sec_per_step
+        sec_time += step_sec_my
+      }
     }
   }
 
@@ -190,7 +239,7 @@ export default class Timeline {
       this.init(this.start_timestamp, this.timecell, true)
       this.drawLine(pos_x, 0, pos_x, 50, `rgb(194, 202, 215)`, 1)
       this.ctx.fillStyle = `rgb(194, 202, 215)`
-      this.ctx.fillText(this.changeTime(time), pos_x - 50, 60)
+      this.ctx.fillText(this.changeTime(time), pos_x, 60)
     }
   }
 
@@ -289,11 +338,14 @@ export default class Timeline {
    */
   graduation_title(datetime) {
     if (datetime.getHours() === 0 && datetime.getMinutes() === 0 && datetime.getMilliseconds() === 0) {
-      return ('0' + datetime.getDate().toString()).substr(-2) + '.' + ('0' + (datetime.getMonth() + 1).toString()).substr(-2) + '.' + datetime.getFullYear()
+      return ('0' + (datetime.getDate() - 8).toString()).substr(-2) + '.' + ('0' + (datetime.getMonth() + 1).toString()).substr(-2) + '.' + datetime.getFullYear()
     }
-    return datetime.getHours() + ':' + ('0' + datetime.getMinutes().toString()).substr(-2)
+    return datetime.getHours() - 8 + ':' + ('0' + datetime.getMinutes().toString()).substr(-2)
   }
 
+  graduation_sec(datetime) {
+    return datetime.getUTCSeconds()
+  }
   /**
    *
    *
@@ -324,7 +376,7 @@ export default class Timeline {
     if (second < 10) {
       second = '0' + second
     }
-    return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second
+    return hour - 8 + ':' + minute + ':' + second
   }
 
   /**
@@ -374,4 +426,4 @@ export default class Timeline {
   clearCanvas() {
     this.ctx.clearRect(0, 0, 1500, 150)
   }
-}
+}                                   
