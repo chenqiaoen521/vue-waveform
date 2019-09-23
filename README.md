@@ -15,7 +15,7 @@
 #### scene
 websocket arraybuffer file mp3 aac blob arraybuffer
 
-#### 组件的使用 全局引入的组件
+#### Components
  
 #####  vue-waveform
 ```
@@ -27,14 +27,19 @@ websocket arraybuffer file mp3 aac blob arraybuffer
 ![效果2](https://github.com/chenqiaoen521/vue-waveform/blob/master/ex2.png)
 
 ##### props
-* WIDTH  宽度 动态改变宽度
-* HEIGHT  高度
-* websocketURL websock连接
+* WIDTH  
+* HEIGHT  
+* websocketURL 
 * id 设备id
 * type 类型  'line' 曲线图 'bar' 柱状图
 * range 柱状图高度显示的比率
 * arraybuffer 字节数组
 * bgColor 波形图背景色
+
+|  attr  |  type | default |  description |
+|  ----  | ----  |  ----   |  ----       |
+| WIDTH  | Number | 500 |  The canvas WIDTH  |
+| HEIGHT  | Number | 300 |  The canvas HEIGHT |
 
 ##### method：
 
