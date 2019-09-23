@@ -27,28 +27,26 @@ websocket arraybuffer file mp3 aac blob arraybuffer
 ![效果2](https://github.com/chenqiaoen521/vue-waveform/blob/master/ex2.png)
 
 ##### props
-* WIDTH  
-* HEIGHT  
-* websocketURL 
-* id 设备id
-* type 类型  'line' 曲线图 'bar' 柱状图
-* range 柱状图高度显示的比率
-* arraybuffer 字节数组
-* bgColor 波形图背景色
-
 |  attr  |  type | default |  description |
 |  ----  | ----  |  ----   |  ----       |
 | WIDTH  | Number | 500 |  The canvas WIDTH  |
 | HEIGHT  | Number | 300 |  The canvas HEIGHT |
+| websocketURL  | String | '' |  websocket url example 'ws://192.168.1.1:8082' |
+| id  | String | '' |  device id |
+| type  | String | 'bar' |  'bar' : bar graph  , 'line' : line  graph |
+| range  | Number | 1 |  axisY Ratio of Canvas height |
+| arraybuffer | ArrayBuffer | null |  websocket Receive Byte array |
+| bgColor | string | 'rgb(0, 0, 0)' |  canvas background color , rgb or Hex color code |
 
 ##### method：
+|  name  |  return type | parameter |  description |
+|  ----  | ----  |  ----   |  ----       |
+| openWS  | void |  |  open websocket  |
+| play  | void |  |  play audio |
+| pause  | void |  |  pause audio |
+| stop  | void |  |  close websocket and pause audio |
 
-* openWS() // 无参数 创建连接初始化对象  支持promise接口调用 
-* play() // 无参数 播放
-* pause() // 无参数 暂停
-* stop() // 无参数 停止 并销毁对象 支持promise接口调用
-
-调用方式 例如： 
+example： 
 ```
 this.$refs.mycom.openWS()
 ```
