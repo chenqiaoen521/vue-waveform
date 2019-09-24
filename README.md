@@ -66,13 +66,6 @@ import 'vue-waveform/dist/static/css/app.css'
 <vue-waveplayer @ready=ready :range="0.3" ref="mycom" :WIDTH="800" :HEIGHT="100" bgColor="#fff" :URL="URL"></vue-waveplayer>
 
 ```
-##### props ：
-* WIDTH  宽度 
-* HEIGHT  高度
-* range 高度显示的比率
-* bgColor 波形图背景色
-* playType 1.是audio标签 2.是 时间轴
-* URL 播放文件地址
 ##### props
 |  attr  |  type | default |  description |
 |  ----  | ----  |  ----   |  ----       |
