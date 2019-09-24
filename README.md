@@ -52,13 +52,13 @@ this.$refs.mycom.openWS()
 ```
 
 
-#### scene
-### audioplayer
+### Components audioPlayer
 ##### audioUI：
 ![效果3](https://github.com/chenqiaoen521/vue-waveform/blob/master/ex3.png)
 ##### timelineUI:
 ![效果3](https://github.com/chenqiaoen521/vue-waveform/blob/master/ex4.png)
 
+## USAGE
 ```
 import {waveform} from 'vue-waveform'
 import 'vue-waveform/dist/static/css/app.css'
@@ -73,10 +73,21 @@ import 'vue-waveform/dist/static/css/app.css'
 * bgColor 波形图背景色
 * playType 1.是audio标签 2.是 时间轴
 * URL 播放文件地址
+##### props
+|  attr  |  type | default |  description |
+|  ----  | ----  |  ----   |  ----       |
+| WIDTH  | Number | 500 |  The canvas WIDTH  |
+| HEIGHT  | Number | 300 |  The canvas HEIGHT |
+| playType  | Number | 2 |  1: audio html  , 2 : timeline |
+| range  | Number | 1 |  axisY Ratio of Canvas height |
+| bgColor | string | 'rgb(0, 0, 0)' |  canvas background color , rgb or Hex color code |
+| URL  | string | '' |  file audio URL |
+##### Methods:
+|  name  |  return type | parameter |  description |
+|  ----  | ----  |  ----   |  ----       |
+| stop  | void | none |  destroy  |
 
-##### method 方法：
-* stop  参数 无
-* seekTo 参数 毫秒
+Example
 ```
 mounted() {
   this.URL = './static/3.aac'
