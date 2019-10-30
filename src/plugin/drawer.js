@@ -1,5 +1,6 @@
 import Analysis from './analysis'
-import { extend, debounce } from './util'
+// import { extend, debounce } from './util'
+import { extend } from './util'
 import Tween from './animation'
 
 let defaultOpt = {
@@ -105,7 +106,8 @@ export default class Drawer {
       x += barWidth + 1
     }
 
-    window.requestAnimationFrame(debounce(this.drawBar, 60))
+    // window.requestAnimationFrame(debounce(this.drawBar, 60))
+    window.requestAnimationFrame(this.drawBar)
   }
 
   drawLine() {
@@ -135,7 +137,8 @@ export default class Drawer {
     this.opts.canvasCtx.stroke()
     // this.opts.canvasCtx.beginPath()
     // this.opts.canvasCtx.strokeStyle = 'rgb(229, 65, 119)'
-    window.requestAnimationFrame(this.drawLine.bind(this))
+    // window.requestAnimationFrame(this.drawLine.bind(this))
+    window.requestAnimationFrame(this.drawLine)
   }
 
   stopAnimation() {
