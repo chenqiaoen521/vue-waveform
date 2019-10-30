@@ -25,7 +25,7 @@ export default class Timeline {
     if (this.params.canvas) {
       this.params.ctx = this.params.canvas.getContext('2d')
       this.params.canvasW = this.params.canvas.width
-      this.params.canVansH = this.params.canvas.height
+      this.params.canvasH = this.params.canvas.height
     }
     extend(this, this.params)
     this.init(this.start_timestamp, this.timecell, false)
@@ -45,13 +45,17 @@ export default class Timeline {
     this.add_graduations(start_left_timestamp)
     this.add_cells(time_cell)
     // this.drawLine(0, this.canVansH, this.canvasW, this.canVansH, `rgb(151, 158, 167)`, 1) //底线
-    this.drawLine(this.canvasW, 0, this.canvasW, 20, `rgb(64, 196, 255)`, 2) //中间播放点时间线
+    this.draw_last_line(start_left_timestamp)
     if (!redraw_flag) { //只有第一次进入才需要添加事件
       // this.add_events()
     }
+  }
+
+  draw_last_line(start_left_timestamp) {
+    this.drawLine(this.canvasW, 0, this.canvasW, 20, `rgb(64, 196, 255)`, 2) //中间播放点时间线
     let time = start_left_timestamp + (this.hours_per_ruler * 3600 * 1000)
     this.ctx.fillStyle = `rgb(64, 196, 255)`
-    this.ctx.fillText(this.changeTime(time), this.canvasW - 35, 30)
+    this.ctx.fillText(this.changeTime(time), this.canvasW - 34, 25)
   }
 
   draw_cell_bg() {
@@ -115,12 +119,16 @@ export default class Timeline {
         lineH = 25
         let big_date = this.graduation_title(date)
         this.ctx.fillStyle = `rgba(255,255,255,1)`
-        this.ctx.fillText(big_date, graduation_left, 30)
+        if (graduation_left + 37 * 2 < this.canvasW) {
+          this.ctx.fillText(big_date, graduation_left, 25)
+        }
       } else if (Math.round(graduation_time / (60 * 1000)) % medium_step === 0) {
         lineH = 15
         let middle_date = this.graduation_title(date)
         this.ctx.fillStyle = `rgba(151,158,167,1)`
-        this.ctx.fillText(middle_date, graduation_left - 20, 30)
+        if (graduation_left + 37 * 2 < this.canvasW) {
+          this.ctx.fillText(middle_date, graduation_left - 20, 25)
+        }
       } else {
         lineH = 10
         // this.ctx.fillStyle = `rgba(151,158,167,1)`
@@ -153,7 +161,9 @@ export default class Timeline {
           } else {
             sec += '0' + Math.round(sec_time)
           }
-          this.ctx.fillText(sec, graduation_left + 5, 30)
+          if (graduation_left + 37 * 2 < this.canvasW) {
+            this.ctx.fillText(sec, graduation_left, 25)
+          }
         }
         graduation_left += sec_per_step
         sec_time += step_sec_my
@@ -237,9 +247,9 @@ export default class Timeline {
     } else {
       let time = this.start_timestamp + pos_x / px_per_ms
       this.init(this.start_timestamp, this.timecell, true)
-      this.drawLine(pos_x, 0, pos_x, 50, `rgb(194, 202, 215)`, 1)
+      this.drawLine(pos_x - 1, 0, pos_x - 1, 25, `rgb(194, 202, 215)`, 1)
       this.ctx.fillStyle = `rgb(194, 202, 215)`
-      this.ctx.fillText(this.changeTime(time), pos_x, 60)
+      this.ctx.fillText(this.changeTime(time), pos_x - 17, 35)
     }
   }
 
@@ -424,6 +434,6 @@ export default class Timeline {
    * @memberof Timeline
    */
   clearCanvas() {
-    this.ctx.clearRect(0, 0, 1500, 150)
+    this.ctx.clearRect(0, 0, this.params.canvasW, this.params.canvasH)
   }
 }                                   

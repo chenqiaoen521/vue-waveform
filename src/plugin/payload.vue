@@ -107,4 +107,6 @@ export default {
 }
 </script>
 <style scoped lang="stylus" rel="stylesheet/stylus">
+canvas
+  background-color: #0a1940
 </style>

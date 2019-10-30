@@ -47,6 +47,7 @@ export default class WsPlayer {
   }
   play() {
     this.ws && this.ws.send('LISTEN:' + this.id)
+    this.drawer.openAnimation()
     this.mse.play()
   }
   pause() {
@@ -54,6 +55,8 @@ export default class WsPlayer {
     this.ws && this.ws.send('STOP_LISTEN')
   }
   stop() {
+    // stop animation
+    this.drawer.stopAnimation()
     return new Promise((resolve, reject) => {
       if (Object.prototype.toString.call(this.ws) === '[object WebSocket]') {
         this.ws.send('STOP_LISTEN')

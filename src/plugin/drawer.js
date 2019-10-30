@@ -1,5 +1,6 @@
 import Analysis from './analysis'
 import { extend, debounce } from './util'
+import Tween from './animation'
 
 let defaultOpt = {
   WIDTH: 500,
@@ -13,15 +14,24 @@ const analyser = audioContext.createAnalyser()
 export default class Drawer {
   constructor (options) {
     this.opts = Object.assign({}, defaultOpt)
+    this.tween = new Tween()
     extend(this.opts, options || {})
     analyser.fftSize = this.opts.fftSize
     this.analysisLine = new Analysis({WIDTH: this.opts.WIDTH, audioContext: audioContext})
     this.receive = this.warpperReceive(this.opts.type)
     this.drawBar = this.drawBar.bind(this)
+    this.mybuffer = undefined
+    this.animationStart = false
   }
 
-  setWidth(v) {
+  setWidth(v, buffer) {
+    this.clear()
     this.opts.WIDTH = v
+  }
+
+  review(buffer) { // 设置重新绘制
+    this.analysisLine = new Analysis({WIDTH: this.opts.WIDTH, audioContext: audioContext})
+    return this.receive(buffer)
   }
 
   destory() {
@@ -45,6 +55,7 @@ export default class Drawer {
       return function (arraybuffer) {
         return new Promise((resolve, reject) => {
           audioContext.decodeAudioData(arraybuffer, function(buffer) {
+            _this.mybuffer = buffer
             _this.analysisLine.getPeaks(buffer)
             _this.drawLine2()
             resolve(buffer)
@@ -66,6 +77,7 @@ export default class Drawer {
   }
 
   drawBar() {
+    if (!this.animationStart) return
     if (this.dataArray === null) return
 
     analyser.getByteFrequencyData(this.dataArray)
@@ -97,6 +109,7 @@ export default class Drawer {
   }
 
   drawLine() {
+    if (!this.animationStart) return
     if (this.dataArray === null) return
 
     analyser.getByteTimeDomainData(this.dataArray)
@@ -125,7 +138,20 @@ export default class Drawer {
     window.requestAnimationFrame(this.drawLine.bind(this))
   }
 
+  stopAnimation() {
+    this.animationStart = false
+    this.clear()
+  }
+
+  openAnimation() {
+    this.animationStart = true
+  }
+  clear() {
+    this.opts.canvasCtx.clearRect(0, 0, this.opts.WIDTH, this.opts.HEIGHT)
+  }
+
   drawLine2() {
+    let _this = this
     let arr = this.analysisLine.mergedPeaks.map(function(item, i) { return item * 1000 })
     this.opts.canvasCtx.fillStyle = this.opts.bgColor
     this.opts.canvasCtx.fillRect(0, 0, this.opts.WIDTH, this.opts.HEIGHT)
@@ -135,7 +161,24 @@ export default class Drawer {
     let sliceWidth = this.opts.WIDTH * 1.0 / arr.length
     let x = 0
     let len = arr.length
-    for (let i = 0; i < len; i++) {
+    this.tween.animate({
+      x: x,
+      duration: 2000,
+      sliceWidth,
+      count: len,
+      callback: function (i, x, sliceWidth) {
+        let y = arr[i] * _this.opts.range + (_this.opts.HEIGHT / 2)
+        if (i === 0) {
+          _this.opts.canvasCtx.moveTo(x, y)
+        } else {
+          _this.opts.canvasCtx.lineTo(x, y)
+        }
+        x += sliceWidth
+        _this.opts.canvasCtx.stroke()
+        return x
+      }
+    })
+    /*for (let i = 0; i < len; i++) {
       let y = arr[i] * this.opts.range + (this.opts.HEIGHT / 2)
       if (i === 0) {
         this.opts.canvasCtx.moveTo(x, y)
@@ -143,7 +186,7 @@ export default class Drawer {
         this.opts.canvasCtx.lineTo(x, y)
       }
       x += sliceWidth
-    }
+    }*/
     this.opts.canvasCtx.lineTo(this.opts.WIDTH, this.opts.HEIGHT / 2)
     this.opts.canvasCtx.stroke()
   }

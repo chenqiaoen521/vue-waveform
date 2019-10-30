@@ -14,6 +14,7 @@ export default class Media {
     this.params.media.oncanplay = () => {
       _this.params.media.play()
     }
+    this.params.media.loop = 'loop'
     this.params.media.onerror = function (e) {
       console.log(e)
     }
@@ -47,6 +48,11 @@ export default class Media {
     let p = time / this.params.duration
     dom.style = `width: ${this.params.length * p}px`
     bus.$emit('process', this.params.length * p)
+  }
+
+  setWidth(width) {
+    this.params.length = width
+    this.params.dom.style = `width: 0px`
   }
 
   isPaused() {

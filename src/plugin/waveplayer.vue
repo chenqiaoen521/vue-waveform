@@ -8,7 +8,7 @@
     <div v-show="playType === 1" class="wave-audio">
       <audio ref="waveAudio" volume="100" preload="true" controls :src="URL"></audio>
     </div>
-    <canvas v-show="playType === 2" ref="timeline" :width="WIDTH" height="62" style="cursor: pointer;border:1px solid #2b2f33;background-color: #2b2f33;"  ondragstart="return false;"></canvas>
+    <canvas v-show="playType === 2" ref="timeline" :width="WIDTH" height="38" class="wave-canvas" ondragstart="return false;"></canvas>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -21,29 +21,6 @@ export default {
   name: '',
   mounted() {
     this.init()
-    let _this = this
-    this.$refs.wavePlayer.style = `width: ${this.WIDTH}px;height: ${this.HEIGHT + 64}px;`
-    this.$on('ready', function (e) {
-      if (_this.playType === 2) {
-        _this.timeline = new Timeline({
-          canvas: this.$refs.timeline,
-          hours_per_ruler: e / 3600,
-          sec_per_my: e
-        })
-        bus.$on('process', function (e) {
-          let event = {}
-          event.pageX = e
-          _this.timeline.mousemoveFunc(event)
-        })
-      }
-      this.$refs.waveContainer.addEventListener('click', function (e) {
-        let pos = e.clientX - this.getBoundingClientRect().left
-        if (_this.media.isPaused()) {
-          _this.$refs.waveMask.style = `width: ${pos}px`
-        }
-        _this.media.params.media.currentTime = (pos / _this.WIDTH) * _this.media.getDuration()
-      }, false)
-    })
   },
   data() {
     return {
@@ -61,7 +38,7 @@ export default {
       default: 1
     },
     playType: {
-      default: 1 // 1 audio标签 2 时间轴
+      default: 2 // 1 audio标签 2 时间轴
     },
     type: {
       type: String,
@@ -98,6 +75,7 @@ export default {
           url: vnew,
           success: function (e) {
             _this.arraybuffer = e
+            _this.myab = e.slice()
             _this.$refs.waveMask.style = 'width: 0px'
             _this.timeline && _this.timeline.clearCanvas()
           },
@@ -134,6 +112,18 @@ export default {
     WIDTH(vnew, old) {
       if (vnew !== old) {
         this.drawer.setWidth(vnew)
+        if (Object.prototype.toString.call(this.myab) === '[object ArrayBuffer]') {
+          this.media && this.media.setWidth(vnew)
+          let ab = this.myab.slice()
+          this.buffer = this.drawer.review(ab)
+          this.isLoad = true
+          bus.$off('process')
+          this.buffer.then(res => {
+            this.isLoad = false
+            this.timeline && this.timeline.clearCanvas()
+            this.$emit('ready', res.duration)
+          })
+        }
       }
     }
   },
@@ -167,6 +157,32 @@ export default {
         type,
         bgColor
       })
+      this.addEvent()
+    },
+    addEvent() {
+      let _this = this
+      this.$refs.wavePlayer.style = `width: ${this.WIDTH}px;height: ${this.HEIGHT + 38}px;`
+      this.$on('ready', function (e) {
+        if (_this.playType === 2) {
+          _this.timeline = new Timeline({
+            canvas: this.$refs.timeline,
+            hours_per_ruler: e / 3600,
+            sec_per_my: e
+          })
+          bus.$on('process', function (e) {
+            let event = {}
+            event.pageX = e
+            _this.timeline.mousemoveFunc(event)
+          })
+        }
+        this.$refs.waveContainer.addEventListener('click', function (e) {
+          let pos = e.clientX - this.getBoundingClientRect().left
+          if (_this.media.isPaused()) {
+            _this.$refs.waveMask.style = `width: ${pos}px`
+          }
+          _this.media.params.media.currentTime = (pos / _this.WIDTH) * _this.media.getDuration()
+        }, false)
+      })
     }
   }
 }
@@ -194,4 +210,8 @@ export default {
   audio
     width 100%
     height 100%
+.wave-canvas
+  cursor: pointer;
+  border:1px solid #2b2f33;
+  background-color: #2b2f33;
 </style>
