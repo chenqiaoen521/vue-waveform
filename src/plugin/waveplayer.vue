@@ -40,6 +40,9 @@ export default {
     playType: {
       default: 2 // 1 audio标签 2 时间轴
     },
+    openAudioContext: {
+      default: true // 使用audioContext false 为使用audio 去播放
+    },
     type: {
       type: String,
       default: 'line'
@@ -68,6 +71,7 @@ export default {
   },
   watch: {
     URL(vnew, old) {
+      if (vnew === '') return
       let _this = this
       this.isLoad = true
       if (vnew !== old) {
@@ -86,10 +90,12 @@ export default {
       }
     },
     arraybuffer(vnew, old) {
+      if (vnew === null) return
       if (typeof vnew === 'object') {
         this.media && this.media.stop() // 先关闭
         this.drawer && this.drawer.destory() // 先关闭
         this.buffer = this.drawer.receive(vnew)
+        this.media && this.media.source && this.media.source.stop()
         let _this = this
         this.$nextTick(() => {
           _this.buffer.then(res => {
@@ -97,7 +103,11 @@ export default {
             if (_this.playType === 1) {
               _this.media = new Media({media: _this.$refs.waveAudio, duration: res.duration, length: _this.WIDTH, dom: _this.$refs.waveMask, url: _this.URL})
             } else if (_this.playType === 2) {
-              _this.media = new Media({media: new Audio(), duration: res.duration, length: _this.WIDTH, dom: _this.$refs.waveMask, url: _this.URL})
+              if (_this.openAudioContext) {
+                _this.media = new Media({byteArray: res, hasAudioContext: true, length: _this.WIDTH, dom: _this.$refs.waveMask, duration: res.duration})
+              } else {
+                _this.media = new Media({media: new Audio(), duration: res.duration, length: _this.WIDTH, dom: _this.$refs.waveMask, url: _this.URL})
+              }
             }
             _this.$emit('ready', res.duration)
           })
@@ -177,11 +187,20 @@ export default {
         }
         this.$refs.waveContainer.addEventListener('click', function (e) {
           let pos = e.clientX - this.getBoundingClientRect().left
-          if (_this.media.isPaused()) {
-            _this.$refs.waveMask.style = `width: ${pos}px`
+          if (_this.openAudioContext) {
+            if (_this.media.isPaused()) {
+              _this.$refs.waveMask.style = `width: ${pos}px`
+            }
+          } else {
+            if (_this.media.isStop) {
+              _this.$refs.waveMask.style = `width: ${pos}px`
+            }
+            _this.media.params.media.currentTime = (pos / _this.WIDTH) * _this.media.getDuration()
           }
-          _this.media.params.media.currentTime = (pos / _this.WIDTH) * _this.media.getDuration()
         }, false)
+      })
+      bus.$on('sourceEnded', function () {
+        _this.arraybuffer = null
       })
     }
   }

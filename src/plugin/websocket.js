@@ -47,7 +47,7 @@ export default class WsPlayer {
   }
   play() {
     this.ws && this.ws.send('LISTEN:' + this.id)
-    this.drawer.openAnimation()
+    this.drawer.startAnimation()
     this.mse.play()
   }
   pause() {

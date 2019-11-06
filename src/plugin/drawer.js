@@ -146,9 +146,10 @@ export default class Drawer {
     this.clear()
   }
 
-  openAnimation() {
+  startAnimation() {
     this.animationStart = true
   }
+
   clear() {
     this.opts.canvasCtx.clearRect(0, 0, this.opts.WIDTH, this.opts.HEIGHT)
   }

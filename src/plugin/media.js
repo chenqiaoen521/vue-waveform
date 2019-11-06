@@ -1,4 +1,5 @@
 const requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame
+
 import bus from './event'
 export default class Media {
   constructor(params) {
@@ -7,20 +8,58 @@ export default class Media {
 
   init(params) {
     this.params = params
-    this.params.duration = this.getDuration()
-    this.process = this.process.bind(this)
-    this.params.media.src = params.url
+    if (params.hasAudioContext) {
+      this.createPlayer()
+    } else {
+      this.params.duration = this.getDuration()
+      this.process = this.process.bind(this)
+      this.params.media.src = params.url
+      let _this = this
+      this.params.media.oncanplay = () => {
+        _this.params.media.play()
+      }
+      this.params.media.loop = 'loop'
+      this.params.media.onplay = () => {
+        _this.createTimer()
+      }
+    }
+  }
+
+  createPlayer() {
+    this.isStop = true //是否已经停止播放
+    this.AudioContext = window.AudioContext || window.webkitAudioContext
+    this.audioContext = new AudioContext()
+    this.source = this.audioContext.createBufferSource()
+    this.analyser = this.audioContext.createAnalyser()
+    this.scriptNode = this.audioContext.createScriptProcessor(4096, 1, 1)
+    this.analyser.connect(this.audioContext.destination)
+    this.scriptNode.connect(this.audioContext.destination)
+    this.source.connect(this.analyser)
+    this.source.connect(this.scriptNode)
+    this.source.buffer = this.params.byteArray
+    this.isStop = false
+    // this.source.loop = true
+    this.source.start(0)
     let _this = this
-    this.params.media.oncanplay = () => {
-      _this.params.media.play()
+    this.source.onended = function() {
+      _this.isStop = true
+      _this.source.disconnect(_this.scriptNode)
+      _this.scriptNode.disconnect(_this.audioContext.destination)
+      bus.$emit('sourceEnded')
     }
-    this.params.media.loop = 'loop'
-    this.params.media.onerror = function (e) {
-      console.log(e)
+    this.createTimerToAudioContext()
+  }
+
+  createTimerToAudioContext() {
+    const onAudioProcess = () => {
+      if (this.isStop) {
+        return
+      }
+      let time = this.audioContext.currentTime
+      this.process(time)
+      requestAnimationFrame(onAudioProcess)
     }
-    this.params.media.onplay = () => {
-      _this.createTimer()
-    }
+    onAudioProcess()
   }
 
   createTimer() {
@@ -64,5 +103,6 @@ export default class Media {
 
   stop() {
     this.params.media && this.params.media.pause()
+    this.source && this.source.stop()
   }
 }

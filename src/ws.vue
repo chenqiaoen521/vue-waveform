@@ -3,7 +3,7 @@
     <vue-waveform v-if="isshow" ref="mycom" :range="0.5" :WIDTH="800" :HEIGHT="100" :type="type" websocketURL="ws://192.168.6.41:8081/ws/websocket/socketServer.do" :id="selectid" :arraybuffer="arraybuffer"></vue-waveform>
     插入文件<input type="file"  @change="addFile" ref="file">
     选择设备id<select v-model="selectid">
-      <option :value="4">38</option>
+      <option :value="16">38</option>
       <option :value="2">37</option>
       <option :value="8">36</option>
     </select>
@@ -28,7 +28,7 @@ export default {
       selectid: 4,
       arraybuffer: undefined,
       type: 'bar',
-      isshow: false
+      isshow: true
     }
   },
   methods: {
