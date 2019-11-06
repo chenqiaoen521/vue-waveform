@@ -31,6 +31,7 @@ websocket arraybuffer file mp3 aac blob arraybuffer
 |  ----  | ----  |  ----   |  ----       |
 | WIDTH  | Number | 500 |  The canvas WIDTH  |
 | HEIGHT  | Number | 300 |  The canvas HEIGHT |
+| openAudioContext  | boolean | true |  use audiocontext player  flase: use audio player |
 | websocketURL  | String | '' |  websocket url example 'ws://192.168.1.1:8082' |
 | id  | String | '' |  device id |
 | type  | String | 'bar' |  'bar' : bar graph  , 'line' : line  graph |
