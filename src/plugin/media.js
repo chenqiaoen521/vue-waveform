@@ -22,6 +22,9 @@ export default class Media {
       this.params.media.onplay = () => {
         _this.createTimer()
       }
+      this.params.media.ontimeupdate = () => {
+        bus.$emit('updateTimeEnded', this.params.media.currentTime)
+      }
     }
   }
 
@@ -42,10 +45,12 @@ export default class Media {
     this.source.start(0)
     let _this = this
     this.source.onended = function() {
-      _this.isStop = true
       _this.source.disconnect(_this.scriptNode)
       _this.scriptNode.disconnect(_this.audioContext.destination)
       bus.$emit('sourceEnded')
+      setTimeout(function () {
+        _this.isStop = true
+      }, 0)
     }
     this.createTimerToAudioContext()
   }
@@ -104,5 +109,9 @@ export default class Media {
   stop() {
     this.params.media && this.params.media.pause()
     this.source && this.source.stop()
+  }
+
+  pause() {
+    this.params.media.pause()
   }
 }

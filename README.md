@@ -73,6 +73,7 @@ import 'vue-waveform/dist/static/css/app.css'
 | WIDTH  | Number | 500 |  The canvas WIDTH  |
 | HEIGHT  | Number | 300 |  The canvas HEIGHT |
 | playType  | Number | 2 |  1: audio html  , 2 : timeline |
+| type  | String | 'line2' |  only choose line2 |
 | range  | Number | 1 |  axisY Ratio of Canvas height |
 | bgColor | string | 'rgb(0, 0, 0)' |  canvas background color , rgb or Hex color code |
 | URL  | string | '' |  file audio URL |

@@ -32,7 +32,8 @@ export default class WsPlayer {
       ws.onmessage = function (event) {
         if (Object.prototype.toString.call(event.data) === '[object ArrayBuffer]') {
           self.mse.appendBuffer(event.data)
-          let array = Array.prototype.slice.call(new Uint8Array(event.data))
+          self.drawer.receive(event.data)
+          /* let array = Array.prototype.slice.call(new Uint8Array(event.data))
           self.buffer.push.apply(self.buffer, array)
           self.frames ++
           if (self.frames > 3) {
@@ -40,7 +41,7 @@ export default class WsPlayer {
             self.drawer.receive(file)
             self.frames = 0
             self.buffer.length = 0
-          }
+          } */
         }
       }
     })
@@ -52,6 +53,7 @@ export default class WsPlayer {
   }
   pause() {
     this.mse.pause()
+    this.drawer.stopAnimation()
     this.ws && this.ws.send('STOP_LISTEN')
   }
   stop() {

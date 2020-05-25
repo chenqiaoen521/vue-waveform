@@ -53,7 +53,7 @@ export default class Timeline {
 
   draw_last_line(start_left_timestamp) {
     this.drawLine(this.canvasW, 0, this.canvasW, 20, `rgb(64, 196, 255)`, 2) //中间播放点时间线
-    let time = start_left_timestamp + (this.hours_per_ruler * 3600 * 1000)
+    let time = start_left_timestamp + (this.sec_per_my * 1000)
     this.ctx.fillStyle = `rgb(64, 196, 255)`
     this.ctx.fillText(this.changeTime(time), this.canvasW - 34, 25)
   }
@@ -63,6 +63,19 @@ export default class Timeline {
     this.ctx.fillRect(0, 0, this.canvasW, 15)
   }
 
+  /* eslint-disable */
+  accDiv(arg1, arg2) { 
+    let t1 = 0
+    let t2 = 0
+    let r1
+    let r2
+    try{ t1 = arg1.toString().split('.')[1].length }catch(e){}
+    try{ t2 = arg2.toString().split(".")[1].length }catch(e){}
+    r1 = Number(arg1.toString().replace('.', ''))
+    r2 = Number(arg2.toString().replace('.', ''))
+    return (r1 / r2) * Math.pow(10, t2 - t1)
+  } 
+  /* eslint-enable */
   /**
    *
    *
@@ -71,8 +84,8 @@ export default class Timeline {
    */
   /* eslint-disable */
   add_graduations(start_left_timestamp) {
-    let px_per_min = this.canvasW / (this.hours_per_ruler * 60) // px/min
-    let px_per_ms = this.canvasW / (this.hours_per_ruler * 60 * 60 * 1000) // px/ms
+    let px_per_min = this.canvasW / (this.sec_per_my / 60) // px/min
+    let px_per_ms = this.canvasW / (this.sec_per_my * 1000) // px/ms
     let px_per_sec = this.canvasW / this.sec_per_my // px/ms
     let px_per_step = this.graduation_step  // px/格 默认最小值20px
     let min_per_step = px_per_step / px_per_min // min/格
@@ -110,12 +123,12 @@ export default class Timeline {
     let lineH
     let ms_offset = this.ms_to_next_step(start_left_timestamp, min_per_step * 60 * 1000) //开始的偏移时间 ms
     let px_offset = ms_offset * px_per_ms //开始的偏移距离 px
-    let ms_per_step = px_per_step / px_per_ms // ms/step
+    let ms_per_step = Math.round(px_per_step / px_per_ms) // ms/step
     for (let j = 0; j < num_steps; j++) {
       graduation_left = px_offset + j * px_per_step // 距离=开始的偏移距离+格数*px/格
       graduation_time = start_left_timestamp + ms_offset + j * ms_per_step //时间=左侧开始时间+偏移时间+格数*ms/格
       let date = new Date(graduation_time)
-      if (date.getUTCHours() === 0 && date.getUTCMinutes() === 0 && this.sec_per_my > 60) {
+      if (date.getUTCHours() === 0 && date.getUTCMinutes() === 0) {
         lineH = 25
         let big_date = this.graduation_title(date)
         this.ctx.fillStyle = `rgba(255,255,255,1)`
@@ -200,7 +213,7 @@ export default class Timeline {
   }
 
   draw_cell(cell) {
-    let px_per_ms = this.canvasW / (this.hours_per_ruler * 60 * 60 * 1000) // px/ms
+    let px_per_ms = this.canvasW / (this.sec_per_my * 1000) // px/ms
     let beginX = (cell.beginTime - this.start_timestamp) * px_per_ms
     let cell_width = (cell.endTime - cell.beginTime) * px_per_ms
     this.ctx.fillStyle = cell.style.background
@@ -236,7 +249,7 @@ export default class Timeline {
    */
   mousemoveFunc(e) {
     let pos_x = this.get_cursor_x_position(e)
-    let px_per_ms = this.canvasW / (this.hours_per_ruler * 60 * 60 * 1000) // px/ms
+    let px_per_ms = this.canvasW / (this.sec_per_my * 1000) // px/ms
     this.clearCanvas()
     if (this.g_isMousedown) {
       let diff_x = pos_x - this.g_mousedownCursor
@@ -249,7 +262,7 @@ export default class Timeline {
       this.init(this.start_timestamp, this.timecell, true)
       this.drawLine(pos_x - 1, 0, pos_x - 1, 25, `rgb(194, 202, 215)`, 1)
       this.ctx.fillStyle = `rgb(194, 202, 215)`
-      this.ctx.fillText(this.changeTime(time), pos_x - 17, 35)
+      this.ctx.fillText(this.changeTime(time), pos_x - 36, 35)
     }
   }
 
@@ -263,7 +276,7 @@ export default class Timeline {
     if (this.g_isMousemove) { //拖动 事件
       this.g_isMousemove = false
       this.g_isMousedown = false
-      this.returnTime = this.start_timestamp + (this.hours_per_ruler * 3600 * 1000) / 2
+      this.returnTime = this.start_timestamp + (this.sec_per_my * 1000) / 2
     } else { // click 事件
       this.g_isMousedown = false
       let posx = this.get_cursor_x_position(e) //鼠标距离 px
@@ -300,7 +313,7 @@ export default class Timeline {
     }
 
     let delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)))
-    let middle_time = this.start_timestamp + (this.hours_per_ruler * 3600 * 1000) / 2 //ms 记住当前中间的时间
+    let middle_time = this.start_timestamp + (this.sec_per_my * 1000) / 2 //ms 记住当前中间的时间
     if (delta < 0) {
       this.zoom = this.zoom + 4
       if (this.zoom >= 24) {
@@ -315,7 +328,7 @@ export default class Timeline {
       this.hours_per_ruler = this.zoom
     }
     this.clearCanvas()
-    this.start_timestamp = middle_time - (this.hours_per_ruler * 3600 * 1000) / 2 //start_timestamp = 当前中间的时间 - zoom/2
+    this.start_timestamp = middle_time - (this.sec_per_my * 1000) / 2 //start_timestamp = 当前中间的时间 - zoom/2
     this.init(this.start_timestamp, this.timecell, true)
   }
 
@@ -410,7 +423,7 @@ export default class Timeline {
    */
   set_time_to_middle(time) {
     this.clearCanvas()
-    this.start_timestamp = time - (this.hours_per_ruler * 60 * 60 * 1000) / 2
+    this.start_timestamp = time - (this.sec_per_my * 1000) / 2
     this.init(this.start_timestamp, this.timecell, true)
   }
 

@@ -21,8 +21,10 @@ export default class Drawer {
     this.analysisLine = new Analysis({WIDTH: this.opts.WIDTH, audioContext: audioContext})
     this.receive = this.warpperReceive(this.opts.type)
     this.drawBar = this.drawBar.bind(this)
+    this.drawLine = this.drawLine.bind(this)
     this.mybuffer = undefined
     this.animationStart = false
+    this.isOpen = false
   }
 
   setWidth(v, buffer) {
@@ -47,12 +49,21 @@ export default class Drawer {
       return function (arraybuffer) {
         return new Promise((resolve, reject) => {
           audioContext.decodeAudioData(arraybuffer, function(buffer) {
-            _this.analysisBar(buffer)
+            _this.analysisBar(buffer, type)
             resolve(buffer)
           })
         })
       }
     } else if (type === 'line') {
+      return function (arraybuffer) {
+        return new Promise((resolve, reject) => {
+          audioContext.decodeAudioData(arraybuffer, function(buffer) {
+            _this.analysisBar(buffer, type)
+            resolve(buffer)
+          })
+        })
+      }
+    } else if (type === 'line2') {
       return function (arraybuffer) {
         return new Promise((resolve, reject) => {
           audioContext.decodeAudioData(arraybuffer, function(buffer) {
@@ -66,7 +77,7 @@ export default class Drawer {
     }
   }
 
-  analysisBar(buffer) {
+  analysisBar(buffer, type) {
     this.audioBufferSourceNode = audioContext.createBufferSource()
     this.audioBufferSourceNode.connect(analyser)
     // this.analyser.connect(this.audioContext.destination)
@@ -74,15 +85,20 @@ export default class Drawer {
     this.audioBufferSourceNode.start(0)
     this.bufferLength = analyser.frequencyBinCount
     this.dataArray = new Uint8Array(this.bufferLength)
-    this.drawBar()
+    if (!this.isOpen) {
+      if (type === 'line') {
+        this.drawLine()
+      } else if (type === 'bar') {
+        this.drawBar()
+      }
+      this.isOpen = true
+    }
   }
 
   drawBar() {
     if (!this.animationStart) return
     if (this.dataArray === null) return
-
     analyser.getByteFrequencyData(this.dataArray)
-
     this.opts.canvasCtx.fillStyle = this.opts.bgColor
     this.opts.canvasCtx.fillRect(0, 0, this.opts.WIDTH, this.opts.HEIGHT)
 
@@ -143,10 +159,12 @@ export default class Drawer {
 
   stopAnimation() {
     this.animationStart = false
+    this.isOpen = false
     this.clear()
   }
 
   startAnimation() {
+    this.isOpen = false
     this.animationStart = true
   }
 

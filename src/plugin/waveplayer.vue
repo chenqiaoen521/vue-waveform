@@ -45,7 +45,7 @@ export default {
     },
     type: {
       type: String,
-      default: 'line'
+      default: 'line2'
     },
     WIDTH: {
       default: 500
@@ -146,6 +146,9 @@ export default {
       this.media && this.media.stop() // 先关闭
       this.drawer && this.drawer.destory() // 先关闭
     },
+    pause() {
+      this.media && this.media.pause()
+    },
     seekTo(start) {
       start = start / 1000
       this.$refs.waveAudio.currentTime = start
@@ -183,6 +186,9 @@ export default {
             let event = {}
             event.pageX = e
             _this.timeline.mousemoveFunc(event)
+          })
+          bus.$on('updateTimeEnded', function (e) {
+            _this.$emit('updateTimeEnded', e)
           })
         }
         this.$refs.waveContainer.addEventListener('click', function (e) {

@@ -6,6 +6,7 @@
       <option :value="16">38</option>
       <option :value="2">37</option>
       <option :value="8">36</option>
+      <option :value="3984">3984</option>
     </select>
     选择类型<select v-model="type">
       <option value="line">line</option>
