@@ -81,7 +81,11 @@ import 'vue-waveform/dist/static/css/app.css'
 |  name  |  return type | parameter |  description |
 |  ----  | ----  |  ----   |  ----       |
 | stop  | void | none |  destroy  |
-
+| pause  | void | none |  pause  |
+##### Events:
+|  name  |  return type | parameter |  description |
+|  ----  | ----  |  ----   |  ----       |
+| updateTimeEnded  | void | currenttime |  time change dispatch currenttime  |
 Example
 ```
 mounted() {
